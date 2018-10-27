@@ -21,7 +21,11 @@ class Echo(Resource):
 
     def post(self):
         msg['msg'] = request.get_json(force=True)
-        result = put(remote_address, msg['msg'])
+        try:
+            result = put(remote_address, msg['msg'])
+        except:
+            return ('failed update remote host: {}'.format(remote_address), 502)
+
         return ('', 204)
         
 api.add_resource(Echo, '/')
@@ -33,4 +37,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     local_port = args.local_port
     remote_address = args.remote_address
-    app.run(debug=False, port=local_port)
+    app.run(debug=False, port=local_port, host='0.0.0.0')
